@@ -11,15 +11,19 @@ export default function LoginForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) return setError(data.error || "Não foi possível entrar.");
-    router.push("/dashboard");
-    router.refresh();
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) return setError(data?.error || "Não foi possível entrar. Tente novamente.");
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Não foi possível conectar ao servidor. Tente novamente.");
+    }
   }
 
   return (
