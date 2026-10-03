@@ -44,7 +44,7 @@ async function main() {
     }
   }
 
-  const serviceNames = [
+  const serviceNames: [string, number, number][] = [
     ["Corte Masculino", 45, 35], ["Barba", 30, 25], ["Corte + Barba", 75, 55],
     ["Corte Feminino", 60, 80], ["Escova", 45, 50], ["Coloração", 120, 160],
     ["Visagismo", 60, 100], ["Design de Sobrancelhas", 30, 35], ["Limpeza de Pele", 60, 90],

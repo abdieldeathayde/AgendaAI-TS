@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { getSessionUserId } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function Dashboard() {
   const userId = await getSessionUserId();
   const [customers, professionals, services, appointments] = await Promise.all([

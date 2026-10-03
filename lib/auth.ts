@@ -4,7 +4,11 @@ import crypto from "node:crypto";
 const COOKIE = "agendaai_session";
 
 function secret() {
-  return process.env.AUTH_SECRET || "dev-only-change-me";
+  const configuredSecret = process.env.AUTH_SECRET;
+  if (process.env.NODE_ENV === "production" && !configuredSecret) {
+    throw new Error("AUTH_SECRET must be configured in production.");
+  }
+  return configuredSecret || "dev-only-change-me";
 }
 
 function sign(value: string) {

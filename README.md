@@ -19,10 +19,10 @@ Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + MySQL**, pe
 npm install
 ```
 
-Copie `.env.example` para `.env` e configure:
+Copie `.env.example` para `.env` e configure as credenciais de um banco MySQL. Em produção, configure também um `AUTH_SECRET` aleatório e forte na Vercel:
 
 ```env
-DATABASE_URL="postgresql://..."
+DATABASE_URL="mysql://USUARIO:SENHA@HOST:3306/agendaai"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 AUTH_SECRET="uma-chave-longa-e-aleatoria"
 ```
@@ -73,11 +73,11 @@ Senha: Demo@12345
 ## Deploy na Vercel
 
 1. Envie este projeto para um repositório GitHub.
-2. Crie um banco MySQL em um provedor com plano gratuito compatível, como Neon ou Supabase.
+2. Crie um banco MySQL gerenciado acessível pela internet. PostgreSQL, incluindo Neon ou Supabase PostgreSQL, não é compatível com o schema atual.
 3. No projeto da Vercel, importe o repositório.
-4. Configure `DATABASE_URL`, `AUTH_SECRET` e `NEXT_PUBLIC_APP_URL`.
+4. Configure `DATABASE_URL` e `AUTH_SECRET`. `NEXT_PUBLIC_APP_URL` é opcional e não é consumida pelo código atual.
 5. Faça o deploy.
-6. Depois que o banco estiver acessível, execute `npx prisma db push` e `npm run db:seed` em ambiente local apontando temporariamente para o banco, ou use um mecanismo de migration/seed apropriado.
+6. Inicialize o schema do banco conforme [VERCEL.md](VERCEL.md). Não execute seed automaticamente no deploy.
 
 ### Variáveis
 

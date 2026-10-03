@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Profissionais() {
   const professionals = await prisma.professional.findMany({ orderBy: { name: "asc" }, include: { services: true } });
   return <main><div className="container">

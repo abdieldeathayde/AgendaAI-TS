@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Servicos() {
   const services = await prisma.service.findMany({ where: { active: true }, orderBy: { name: "asc" }, include: { professional: true } });
   return <main><div className="container">
