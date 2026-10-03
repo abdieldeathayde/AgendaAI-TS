@@ -1,6 +1,6 @@
-# AgendaAI Next — Vercel Ready
+# AgendaAI Next
 
-Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + MySQL**, pensada para deploy simples na Vercel.
+Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + PostgreSQL**, preparada para deploy na Vercel ou no Render.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + MySQL**, pe
 - TypeScript
 - React
 - Prisma ORM
-- MySQL
+- PostgreSQL
 - API Routes / Route Handlers
 - Cookie de sessão HTTP-only
 - Vercel
@@ -19,10 +19,10 @@ Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + MySQL**, pe
 npm install
 ```
 
-Copie `.env.example` para `.env` e configure as credenciais de um banco MySQL. Em produção, configure também um `AUTH_SECRET` aleatório e forte na Vercel:
+Copie `.env.example` para `.env` e configure as credenciais de um banco PostgreSQL. Em produção, configure também um `AUTH_SECRET` aleatório e forte na plataforma de deploy:
 
 ```env
-DATABASE_URL="mysql://USUARIO:SENHA@HOST:3306/agendaai"
+DATABASE_URL="postgresql://USUARIO:SENHA@HOST:5432/agendaai?schema=public"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 AUTH_SECRET="uma-chave-longa-e-aleatoria"
 ```
@@ -73,11 +73,15 @@ Senha: Demo@12345
 ## Deploy na Vercel
 
 1. Envie este projeto para um repositório GitHub.
-2. Crie um banco MySQL gerenciado acessível pela internet. PostgreSQL, incluindo Neon ou Supabase PostgreSQL, não é compatível com o schema atual.
+2. Crie um banco PostgreSQL gerenciado acessível pela aplicação.
 3. No projeto da Vercel, importe o repositório.
 4. Configure `DATABASE_URL` e `AUTH_SECRET`. `NEXT_PUBLIC_APP_URL` é opcional e não é consumida pelo código atual.
 5. Faça o deploy.
 6. Inicialize o schema do banco conforme [VERCEL.md](VERCEL.md). Não execute seed automaticamente no deploy.
+
+## Deploy no Render
+
+Use o Blueprint `render.yaml` ou siga o guia [RENDER.md](RENDER.md). O Blueprint cria um PostgreSQL no Render e configura a conexão privada para o serviço.
 
 ### Variáveis
 
@@ -105,18 +109,18 @@ A camada visual e as rotas administrativas podem ser expandidas conforme a vers�
 - `POST /api/appointments`
 
 
-## MySQL
+## PostgreSQL local
 
-Exemplo para MySQL local:
+Exemplo de URL para PostgreSQL local:
 
 ```env
-DATABASE_URL="mysql://root:SUA_SENHA@localhost:3306/agendaai"
+DATABASE_URL="postgresql://postgres:SUA_SENHA@localhost:5432/agendaai?schema=public"
 ```
 
-Crie o banco antes de executar o Prisma:
+Crie o banco `agendaai` no PostgreSQL antes de executar o Prisma. Depois:
 
 ```sql
-CREATE DATABASE agendaai CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE agendaai;
 ```
 
 Depois:

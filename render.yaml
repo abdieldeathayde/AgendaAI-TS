@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: agendaai
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: agendaai-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+
+databases:
+  - name: agendaai-db
+    databaseName: agendaai
+    user: agendaai
+    plan: 0.1c-256mb

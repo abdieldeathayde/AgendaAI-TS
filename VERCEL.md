@@ -2,14 +2,14 @@
 
 ## Requisitos
 
-- Um banco MySQL gerenciado, acessível publicamente pela Vercel. O schema Prisma deste projeto usa MySQL; PostgreSQL não é compatível.
+- Um banco PostgreSQL gerenciado, acessível pela Vercel. O schema Prisma deste projeto usa PostgreSQL.
 - Node.js e npm compatíveis com a versão do Next.js definida no `package.json`.
 
 ## Variáveis de ambiente
 
 Configure em **Vercel > Project > Settings > Environment Variables** para Production e, se necessário, Preview:
 
-- `DATABASE_URL`: URL de conexão MySQL fornecida pelo provedor. Codifique caracteres especiais na senha conforme o formato URL.
+- `DATABASE_URL`: URL de conexão PostgreSQL fornecida pelo provedor, normalmente começando com `postgresql://`. Codifique caracteres especiais na senha conforme o formato URL.
 - `AUTH_SECRET`: segredo aleatório forte, diferente do segredo local. Pode ser gerado com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
 - `NEXT_PUBLIC_APP_URL`: opcional; atualmente não é consumida pelo código. Se for usada futuramente, configure com a URL pública do deployment.
 
@@ -24,7 +24,7 @@ Não versione `.env` nem copie credenciais para arquivos do projeto. O `.env` lo
 
 ## Banco e migrations
 
-O repositório ainda não contém migrations Prisma. Para criar o schema inicial num banco vazio, configure temporariamente `DATABASE_URL` para o banco de destino numa máquina confiável e execute:
+O repositório ainda não contém migrations Prisma. Para criar o schema inicial num banco PostgreSQL vazio, configure temporariamente `DATABASE_URL` para o banco de destino numa máquina confiável e execute:
 
 ```bash
 npx prisma db push

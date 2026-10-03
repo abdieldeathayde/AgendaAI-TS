@@ -30,6 +30,8 @@ npm run dev
 
 ## Importante
 
+O provider atual do projeto é PostgreSQL. Configure `DATABASE_URL` com uma URL `postgresql://...` conforme `.env.example`; URLs MySQL não funcionam com este schema.
+
 O `package.json` desta versão já possui:
 
 ```json
