@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { appointments, customers, professionals, services, type Appointment, type Customer, type Professional, type Service } from "@/lib/demo-data";
-import { createAgendaWorkbook, downloadAgendaWorkbook, readAgendaWorkbook } from "@/lib/excel-workbook";
+import { downloadAgendaWorkbook, readAgendaWorkbook } from "@/lib/excel-workbook";
 
 export type AgendaData = {
   customers: Customer[];
@@ -24,47 +24,8 @@ type AgendaStore = {
 };
 
 const storageKey = "agendaai-data-v1";
-const databaseName = "agendaai-workbooks";
-const objectStoreName = "files";
-const workbookKey = "agendaai.xlsx";
 const initialData: AgendaData = { customers, professionals, services, appointments };
 const AgendaStoreContext = createContext<AgendaStore | null>(null);
-
-function openWorkbookDatabase() {
-  return new Promise<IDBDatabase>((resolve, reject) => {
-    if (typeof indexedDB === "undefined") {
-      reject(new Error("Este navegador não oferece armazenamento local de planilhas."));
-      return;
-    }
-    const request = indexedDB.open(databaseName, 1);
-    request.onupgradeneeded = () => request.result.createObjectStore(objectStoreName);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("Não foi possível abrir o armazenamento local."));
-  });
-}
-
-async function storeWorkbook(blob: Blob) {
-  const database = await openWorkbookDatabase();
-  await new Promise<void>((resolve, reject) => {
-    const transaction = database.transaction(objectStoreName, "readwrite");
-    transaction.objectStore(objectStoreName).put(blob, workbookKey);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error ?? new Error("Não foi possível salvar a planilha."));
-    transaction.onabort = () => reject(transaction.error ?? new Error("O salvamento da planilha foi cancelado."));
-  });
-  database.close();
-}
-
-async function loadWorkbook() {
-  const database = await openWorkbookDatabase();
-  const blob = await new Promise<Blob | null>((resolve, reject) => {
-    const request = database.transaction(objectStoreName, "readonly").objectStore(objectStoreName).get(workbookKey);
-    request.onsuccess = () => resolve(request.result instanceof Blob ? request.result : null);
-    request.onerror = () => reject(request.error ?? new Error("Não foi possível abrir a planilha salva."));
-  });
-  database.close();
-  return blob;
-}
 
 function isAgendaData(value: unknown): value is AgendaData {
   if (!value || typeof value !== "object") return false;
@@ -80,25 +41,19 @@ export function AgendaDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AgendaData>(initialData);
   const [ready, setReady] = useState(false);
   const [spreadsheetStatus, setSpreadsheetStatus] = useState("Carregando dados");
-  const writeQueue = useRef(Promise.resolve());
 
   function persist(nextData: AgendaData) {
     setData(nextData);
     try {
       localStorage.setItem(storageKey, JSON.stringify(nextData));
-      setSpreadsheetStatus("Salvando planilha neste navegador");
-      writeQueue.current = writeQueue.current
-        .then(async () => storeWorkbook(await createAgendaWorkbook(nextData)))
-        .then(() => setSpreadsheetStatus("Planilha salva neste navegador"))
-        .catch(() => setSpreadsheetStatus("Dados salvos no navegador; falha ao gravar o arquivo Excel local"));
+      setSpreadsheetStatus("Dados salvos neste navegador");
     } catch {
-      setSpreadsheetStatus("Armazenamento local indisponível neste navegador");
+      setSpreadsheetStatus("Não foi possível salvar: o localStorage está indisponível ou cheio");
     }
   }
 
   useEffect(() => {
-    let active = true;
-    async function restoreData() {
+    function restoreData() {
       let restoredData: AgendaData | null = null;
       try {
         const savedData = localStorage.getItem(storageKey);
@@ -106,25 +61,24 @@ export function AgendaDataProvider({ children }: { children: ReactNode }) {
           const parsed: unknown = JSON.parse(savedData);
           if (isAgendaData(parsed)) restoredData = parsed;
         }
-        if (!restoredData) {
-          const workbook = await loadWorkbook();
-          if (workbook) restoredData = await readAgendaWorkbook(workbook);
-        }
       } catch {
-        setSpreadsheetStatus("A planilha salva não pôde ser lida; usando dados de demonstração");
+        try {
+          localStorage.removeItem(storageKey);
+          setSpreadsheetStatus("Dados locais inválidos; carregando a demonstração");
+        } catch {
+          setSpreadsheetStatus("O navegador bloqueou o acesso ao localStorage");
+        }
       }
 
-      if (!active) return;
       setData(restoredData ?? initialData);
       setReady(true);
       if (restoredData) {
-        setSpreadsheetStatus("Planilha carregada neste navegador");
+        setSpreadsheetStatus("Dados restaurados do localStorage");
       } else {
         persist(initialData);
       }
     }
-    void restoreData();
-    return () => { active = false; };
+    restoreData();
   }, []);
 
   function addCustomer(customer: Omit<Customer, "id">) {

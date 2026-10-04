@@ -10,7 +10,7 @@ Aplicação frontend-only de agenda e gestão, construída com **Next.js, React,
 - Catálogo de profissionais e serviços.
 - Login local de demonstração.
 
-Os dados iniciais são fixtures tipados em `lib/demo-data.ts`. Novos registros são salvos automaticamente neste navegador (localStorage e IndexedDB como workbook XLSX). Use **Baixar Excel** para guardar uma cópia `.xlsx` ou **Importar Excel** para restaurá-la em outro navegador/dispositivo. O armazenamento do navegador não sincroniza entre dispositivos. A sessão de demonstração também fica no `localStorage` e não é autenticação segura.
+Os dados iniciais são fixtures tipados em `lib/demo-data.ts`. Novos registros são salvos automaticamente no `localStorage` deste navegador. Use **Baixar Excel** para guardar uma cópia `.xlsx` ou **Importar Excel** para restaurá-la em outro navegador/dispositivo; a importação substitui os dados locais após confirmação. O `localStorage` não sincroniza entre dispositivos. A sessão de demonstração também fica nele e não é autenticação segura.
 
 ## Desenvolvimento
 
