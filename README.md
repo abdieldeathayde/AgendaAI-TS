@@ -5,12 +5,16 @@ Aplicação frontend-only de agenda e gestão, construída com **Next.js, React,
 ## Telas
 
 - Dashboard com indicadores e próximos atendimentos.
-- Agenda com busca e filtro por status.
-- Clientes com busca por nome, e-mail ou telefone.
-- Catálogo de profissionais e serviços.
+- Agenda com busca, filtro por status e cadastro de horários; verifica conflitos do profissional.
+- Clientes com busca e formulário de cadastro.
+- Profissionais e serviços com formulários de cadastro.
 - Login local de demonstração.
 
-Os dados iniciais são fixtures tipados em `lib/demo-data.ts`. Novos registros são salvos automaticamente no `localStorage` deste navegador. Use **Baixar Excel** para guardar uma cópia `.xlsx` ou **Importar Excel** para restaurá-la em outro navegador/dispositivo; a importação substitui os dados locais após confirmação. O `localStorage` não sincroniza entre dispositivos. A sessão de demonstração também fica nele e não é autenticação segura.
+Os dados iniciais são fixtures tipados em `lib/demo-data.ts`. Cadastros e alterações são salvos automaticamente no `localStorage` do navegador atual.
+
+Use **Baixar Excel** para exportar um arquivo `.xlsx` com as abas `Clientes`, `Profissionais`, `Serviços` e `Agenda`. **Importar Excel** restaura esses dados; requer as quatro abas e os cabeçalhos do arquivo exportado pelo app. A importação substitui todos os dados locais após confirmação.
+
+O armazenamento é isolado por navegador e endereço do site: não sincroniza entre usuários ou dispositivos e não é enviado ao Render/Vercel. Para transferir dados, baixe a planilha e importe-a no outro navegador. O login é apenas uma demonstração no cliente, não use para proteger dados reais.
 
 ## Desenvolvimento
 
@@ -31,7 +35,7 @@ npm start
 
 ## Deploy
 
-- **Vercel:** importe o repositório; a plataforma detecta Next.js automaticamente e executa o build.
-- **Render:** use o Blueprint `render.yaml` ou crie um Web Service Node com `npm ci && npm run build` e `npm start`.
+- **Produção na Vercel:** [Abrir AgendaAI](https://agenda-ai-ts.vercel.app/dashboard). A raiz do domínio redireciona para o dashboard.
+- **Render alternativo:** use o Blueprint `render.yaml` ou crie um Web Service Node com `npm ci && npm run build` e `npm start`.
 
-Não são necessárias variáveis de ambiente. O frontend funciona com os dados de demonstração incluídos.
+Não são necessárias variáveis de ambiente. O frontend inicia com os dados de demonstração incluídos. O `localStorage` da produção na Vercel é separado do `localhost`; use os controles Excel para transferir registros entre eles.
