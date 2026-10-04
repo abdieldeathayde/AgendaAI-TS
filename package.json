@@ -4,27 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts",
-    "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "typecheck": "tsc --noEmit --incremental false"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2",
     "next": "^16.0.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "read-excel-file": "^9.3.10",
+    "write-excel-file": "^4.1.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "prisma": "^6.16.2",
-    "tsx": "^4.19.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.2"
   }
 }

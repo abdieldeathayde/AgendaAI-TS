@@ -1,132 +1,37 @@
-# AgendaAI Next
+# AgendaAI
 
-Migração do AgendaAI Django para **Next.js + TypeScript + Prisma + PostgreSQL**, preparada para deploy na Vercel ou no Render.
+Aplicação frontend-only de agenda e gestão, construída com **Next.js, React, TypeScript e Tailwind CSS**. Não há API própria, banco de dados ou autenticação de servidor.
 
-## Stack
+## Telas
 
-- Next.js
-- TypeScript
-- React
-- Prisma ORM
-- PostgreSQL
-- API Routes / Route Handlers
-- Cookie de sessão HTTP-only
-- Vercel
+- Dashboard com indicadores e próximos atendimentos.
+- Agenda com busca e filtro por status.
+- Clientes com busca por nome, e-mail ou telefone.
+- Catálogo de profissionais e serviços.
+- Login local de demonstração.
 
-## 1. Instalação
+Os dados iniciais são fixtures tipados em `lib/demo-data.ts`. Novos registros são salvos automaticamente neste navegador (localStorage e IndexedDB como workbook XLSX). Use **Baixar Excel** para guardar uma cópia `.xlsx` ou **Importar Excel** para restaurá-la em outro navegador/dispositivo. O armazenamento do navegador não sincroniza entre dispositivos. A sessão de demonstração também fica no `localStorage` e não é autenticação segura.
+
+## Desenvolvimento
+
+Requisito: Node.js 20.9 ou superior.
 
 ```bash
 npm install
-```
-
-Copie `.env.example` para `.env` e configure as credenciais de um banco PostgreSQL. Em produção, configure também um `AUTH_SECRET` aleatório e forte na plataforma de deploy:
-
-```env
-DATABASE_URL="postgresql://USUARIO:SENHA@HOST:5432/agendaai?schema=public"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-AUTH_SECRET="uma-chave-longa-e-aleatoria"
-```
-
-## 2. Banco
-
-```bash
-npx prisma generate
-npx prisma db push
-npm run db:seed
-```
-
-## 3. Executar
-
-```bash
 npm run dev
 ```
 
-Abra `http://localhost:3000`.
-
-## Credenciais de demonstração
-
-Administrador:
-
-```text
-admin@agendaai.local
-Admin@12345
-```
-
-Clientes:
-
-```text
-cliente1@agendaai.local
-...
-cliente12@agendaai.local
-Senha: Demo@12345
-```
-
-Profissionais:
-
-```text
-prof1@agendaai.local
-...
-prof5@agendaai.local
-Senha: Demo@12345
-```
-
-## Deploy na Vercel
-
-1. Envie este projeto para um repositório GitHub.
-2. Crie um banco PostgreSQL gerenciado acessível pela aplicação.
-3. No projeto da Vercel, importe o repositório.
-4. Configure `DATABASE_URL` e `AUTH_SECRET`. `NEXT_PUBLIC_APP_URL` é opcional e não é consumida pelo código atual.
-5. Faça o deploy.
-6. Inicialize o schema do banco conforme [VERCEL.md](VERCEL.md). Não execute seed automaticamente no deploy.
-
-## Deploy no Render
-
-Use o Blueprint `render.yaml` ou siga o guia [RENDER.md](RENDER.md). O Blueprint cria um PostgreSQL no Render e configura a conexão privada para o serviço.
-
-### Variáveis
-
-```env
-DATABASE_URL=...
-AUTH_SECRET=...
-NEXT_PUBLIC_APP_URL=https://seu-projeto.vercel.app
-```
-
-## Observação importante
-
-O projeto mantém a lógica central do AgendaAI original: usuários, clientes, profissionais, serviços, disponibilidade, agendamentos, status, preço no momento do agendamento e bloqueio de conflitos.
-
-A camada visual e as rotas administrativas podem ser expandidas conforme a versão Django original. Esta base já está organizada para crescer sem precisar voltar ao servidor Django.
-
-## API
-
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/customers`
-- `POST /api/customers`
-- `GET /api/professionals`
-- `GET /api/services`
-- `GET /api/appointments`
-- `POST /api/appointments`
-
-
-## PostgreSQL local
-
-Exemplo de URL para PostgreSQL local:
-
-```env
-DATABASE_URL="postgresql://postgres:SUA_SENHA@localhost:5432/agendaai?schema=public"
-```
-
-Crie o banco `agendaai` no PostgreSQL antes de executar o Prisma. Depois:
-
-```sql
-CREATE DATABASE agendaai;
-```
-
-Depois:
+Abra `http://localhost:3000`. Acesso de demonstração: `admin@agendaai.local` / `Admin@12345`.
 
 ```bash
-npx prisma generate
-npx prisma db push
-npm run db:seed
+npm run typecheck
+npm run build
+npm start
 ```
+
+## Deploy
+
+- **Vercel:** importe o repositório; a plataforma detecta Next.js automaticamente e executa o build.
+- **Render:** use o Blueprint `render.yaml` ou crie um Web Service Node com `npm ci && npm run build` e `npm start`.
+
+Não são necessárias variáveis de ambiente. O frontend funciona com os dados de demonstração incluídos.

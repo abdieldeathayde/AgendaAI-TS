@@ -1,9 +1,11 @@
 import "./globals.css";
-import Link from "next/link";
+import type { Metadata } from "next";
+import AppShell from "./components/app-shell";
+import { AgendaDataProvider } from "@/lib/agenda-store";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "AgendaAI",
-  description: "Sistema de agendamento e gestão.",
+  description: "Demonstração frontend de gestão de agendamentos.",
 };
 
 export default function RootLayout({
@@ -14,25 +16,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <header className="nav">
-          <div className="container nav-inner">
-            <Link href="/" className="brand">AgendaAI</Link>
-            <nav className="nav-links">
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/agenda">Agenda</Link>
-              <Link href="/clientes">Clientes</Link>
-              <Link href="/profissionais">Profissionais</Link>
-              <Link href="/servicos">Serviços</Link>
-              <Link href="/login">Entrar</Link>
-            </nav>
-          </div>
-        </header>
-
-        {children}
-
-        <footer className="footer">
-          AgendaAI • Next.js + TypeScript + Prisma + PostgreSQL
-        </footer>
+        <AgendaDataProvider>
+          <AppShell>{children}</AppShell>
+        </AgendaDataProvider>
       </body>
     </html>
   );
